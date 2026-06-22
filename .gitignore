@@ -1,0 +1,16 @@
+# Generated agent harness mirrors — source of truth is .agents/.
+# Regenerate with `python3 .agents/setup.py` (a session_start hook does this
+# automatically once the mirrors exist).
+.claude/
+.codex/
+.opencode/
+.cursor/
+/CLAUDE.md
+/GEMINI.md
+
+# python
+__pycache__/
+*.pyc
+
+# os
+.DS_Store

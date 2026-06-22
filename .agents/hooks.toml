@@ -1,0 +1,22 @@
+# Hooks: intent + templated implementation.
+#
+# Placeholders the compiler substitutes per vendor:
+#   {file}       — path of the edited file
+#   {repo_root}  — repo root path
+# If a placeholder has no verified mapping for a vendor, that hook is omitted
+# for that vendor rather than emitted with a guessed substitution.
+#
+# Event names are vendor-agnostic; setup.py maps them to each vendor's events
+# (e.g. session_start → Claude SessionStart / Codex [[hooks.SessionStart]]).
+
+# Keep vendor mirrors fresh: recompile on every session start. The compiler is
+# idempotent and silent when nothing changed; stdout is redirected so the
+# "wrote X" lines don't leak into the agent's context. stderr is preserved so
+# real errors still surface.
+[[session_start]]
+run = "python3 .agents/setup.py > /dev/null"
+
+# Example of a templated post-edit hook (commented out — uncomment and adapt).
+# {file} expands to the edited file's path in each vendor's native form.
+# [[post_edit]]
+# run = "ruff format {file}"

@@ -1,0 +1,48 @@
+# Permissions intent — vendor-agnostic.
+#
+# Source is written in Claude-Code-style command-pattern syntax (`Tool` or
+# `Tool(pattern)`). .agents/setup.py translates this into each vendor's native
+# model:
+#   - Claude: passthrough into .claude/settings.json
+#   - Codex:  command rules → .codex/rules/default.rules (Starlark prefix_rule),
+#             file paths    → [permissions.<profile>.filesystem] deny in config.toml,
+#             web tools     → [permissions.<profile>.network] enabled
+#
+# Three verdicts: `allow` (permitted silently), `ask` (prompt first), `deny`
+# (forbidden). When verdicts overlap, the most restrictive wins.
+
+allow = [
+    "Read",
+    "Edit",
+    "Write",
+    "Bash(*)",
+    "WebSearch(*)",
+    "WebFetch(*)",
+]
+
+ask = [
+    "Bash(git reset --hard *)",
+    "Bash(git clean *)",
+    "Bash(git checkout -- *)",
+    "Bash(git restore *)",
+    "Bash(git branch -D *)",
+    "Bash(git stash drop *)",
+    "Bash(git stash clear*)",
+    "Bash(rm -rf *)",
+    "Bash(rm -r *)",
+]
+
+deny = [
+    "Bash(git push --force *)",
+    "Bash(git push -f *)",
+    "Bash(rm -rf /*)",
+    "Bash(rm -rf ~*)",
+    "Bash(rm -rf .*)",
+    "Bash(sudo *)",
+    "Read(./.env)",
+    "Read(./.env.*)",
+    "Bash(cat .env*)",
+    "Bash(grep * .env*)",
+    "Bash(less .env*)",
+    "Bash(more .env*)",
+]
